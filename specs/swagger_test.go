@@ -39,7 +39,7 @@ func TestSwagger_Parse(t *testing.T) {
 
 	owner := swagger.Data.SubServices["Bucket"].Operations["ListObjects"].Responses[200].Elements.Properties["owner"]
 	assert.Equal(t, "object", owner.Type)
-	assert.Equal(t, "owner", owner.ExtraType)
+	assert.Equal(t, "", owner.ExtraType)
 
 	listBuckets := swagger.Data.Service.Operations["ListBuckets"]
 	location := listBuckets.Request.Headers.Properties["Location"]

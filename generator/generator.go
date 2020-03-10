@@ -87,10 +87,10 @@ func (g *Generator) Render() error {
 
 			g.code = buffer.String()
 		default:
-			return fmt.Errorf("Template format not supported: \"%s\"", g.template.Format)
+			return fmt.Errorf("template format not supported: \"%s\"", g.template.Format)
 		}
 	} else {
-		g.code = string(g.template.FileContent)
+		g.code = g.template.FileContent
 	}
 
 	return nil

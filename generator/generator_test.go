@@ -60,7 +60,7 @@ func TestGenerator(t *testing.T) {
 
 	err = codeGenerator.Render()
 	assert.NotNil(t, err)
-	assert.Equal(t, "Template format not supported: \"Mustache\"", err.Error())
+	assert.Equal(t, "template format not supported: \"Mustache\"", err.Error())
 
 	loadedTemplates["service"].Format = "Go"
 	err = codeGenerator.Render()

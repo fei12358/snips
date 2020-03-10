@@ -55,7 +55,7 @@ func TestSwagger_getIntermediateTypeOfSchema(t *testing.T) {
 
 	swagger := Swagger{}
 	keys := document.Spec().Paths.Paths["/{bucketName}"].Get.Responses.StatusCodeResponses[200].Schema.Properties["keys"].Items.Schema
-	assert.Equal(t, "key", swagger.intermediateTypeOfSchema(keys))
+	assert.Equal(t, "object", swagger.intermediateTypeOfSchema(keys))
 }
 
 func TestSwagger_parseEnum(t *testing.T) {
@@ -94,7 +94,7 @@ func TestSwagger_parseSchema(t *testing.T) {
 	keys := document.Spec().Paths.Paths["/{bucketName}"].Get.Responses.StatusCodeResponses[200].Schema.Properties["keys"].Items.Schema
 	property := swagger.parseSchema("keys", keys)
 	assert.Equal(t, "object", property.Type)
-	assert.Equal(t, "key", property.ExtraType)
+	assert.Equal(t, "", property.ExtraType)
 	assert.Equal(t, false, property.IsRequired)
 
 	body := document.Spec().Paths.Paths["/{bucketName}"].Head.Responses.StatusCodeResponses[200].Schema

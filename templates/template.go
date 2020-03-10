@@ -17,8 +17,9 @@
 package templates
 
 import (
-	"github.com/yunify/snips/utils"
 	"path/filepath"
+
+	"github.com/yunify/snips/utils"
 )
 
 // A Template holds the information of template file.

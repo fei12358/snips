@@ -1,8 +1,18 @@
 SHELL := /bin/bash
 
+MODULE   = $(shell env GO111MODULE=on go list -m)
 VERSION=$(shell cat constants/version.go | grep "Version\ =" | sed -e s/^.*\ //g | sed -e s/\"//g)
+
 DIRS_WITHOUT_VENDOR=$(shell ls -d */ | grep -vE "vendor")
-PKGS_WITHOUT_VENDOR=$(shell go list ./... | grep -v "/vendor/")
+PKGS_WITHOUT_VENDOR=$(shell env GO111MODULE=on go list ./... | grep -v "/vendor/")
+TESTPKGS = $(shell env GO111MODULE=on go list -f \
+			'{{ if or .TestGoFiles .XTestGoFiles }}{{ .ImportPath }}{{ end }}' \
+			$(PKGS_WITHOUT_VENDOR))
+
+BIN      = $(CURDIR)/bin
+RELEASE  = $(CURDIR)/release
+
+export GO111MODULE=on
 
 .PHONY: help
 help:
@@ -18,15 +28,21 @@ help:
 	@echo "  clean         to clean build and test files"
 
 .PHONY: all
-all: check build release clean unit-test unit-coverage
+all: check build release clean
 
 .PHONY: check
-check: vet lint
+check: fmt vet lint
+
+.PHONY: fmt
+fmt:
+	@echo "Running go tool fmt, on snips packages"
+	@go fmt ${PKGS_WITHOUT_VENDOR}
+	@echo "Done"
 
 .PHONY: vet
 vet:
 	@echo "Running go tool vet, on snips packages"
-	@go tool vet -all ${DIRS_WITHOUT_VENDOR}
+	@go vet ${PKGS_WITHOUT_VENDOR}
 	@echo "Done"
 
 .PHONY: lint
@@ -39,8 +55,7 @@ lint:
 .PHONY: build
 build:
 	@echo "Building snips"
-	mkdir -p ./bin
-	go build -o ./bin/snips .
+	go build -o $(BIN)/snips main.go
 	@echo "Done"
 
 .PHONY: test
@@ -66,7 +81,7 @@ test-coverage:
 install: build
 	@if [[ -z "${GOPATH}" ]]; then echo "ERROR: $GOPATH not found."; exit 1; fi
 	@echo "Installing into ${GOPATH}/bin/snips..."
-	@cp ./bin/snips ${GOPATH}/bin/snips
+	@cp $(BIN)/snips ${GOPATH}/bin/snips
 	@echo "Done"
 
 .PHONY: uninstall
@@ -81,11 +96,11 @@ release:
 	@echo "Release snips"
 	mkdir -p ./release
 	@echo "for Linux"
+	mkdir -p ./bin/linux
 	GOOS=linux GOARCH=amd64 go build -o ./bin/linux/snips .
-	mkdir -p ./release
 	tar -C ./bin/linux/ -czf ./release/snips-v${VERSION}-linux_amd64.tar.gz snips
 	@echo "for macOS"
-	mkdir -p ./bin/linux
+	mkdir -p ./bin/darwin
 	GOOS=darwin GOARCH=amd64 go build -o ./bin/darwin/snips .
 	tar -C ./bin/darwin/ -czf ./release/snips-v${VERSION}-darwin_amd64.tar.gz snips
 	@echo "for Windows"

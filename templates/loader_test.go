@@ -31,10 +31,10 @@ func TestLoadTemplates_0(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, 4, len(templates))
-	assert.Equal(t, "{{$service := .Data.Service}}\n{{camelCase $service.Name}}\n", string(templates["service"].FileContent))
-	assert.Equal(t, "sub service template\n", string(templates["sub_service"].FileContent))
-	assert.Equal(t, "types template\n", string(templates["types"].FileContent))
-	assert.Equal(t, "shared\n", string(templates["shared"].FileContent))
+	assert.Equal(t, "{{$service := .Data.Service}}\n{{camelCase $service.Name}}\n", templates["service"].FileContent)
+	assert.Equal(t, "sub service template\n", templates["sub_service"].FileContent)
+	assert.Equal(t, "types template\n", templates["types"].FileContent)
+	assert.Equal(t, "shared\n", templates["shared"].FileContent)
 	assert.Equal(t, "Mustache", manifest.Template.Format)
 }
 
@@ -46,7 +46,7 @@ func TestLoadTemplates_1(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, 1, len(templates))
-	assert.Equal(t, "service test template\n", string(templates["service"].FileContent))
+	assert.Equal(t, "service test template\n", templates["service"].FileContent)
 	assert.Equal(t, "Go", manifest.Template.Format)
 }
 
@@ -58,11 +58,11 @@ func TestLoadTemplates_2(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, 1, len(templates))
-	assert.Equal(t, "types template\n", string(templates["types"].FileContent))
-	assert.Equal(t, "camel_case", string(templates["types"].OutputFileNaming.Style))
-	assert.Equal(t, ".any", string(templates["types"].OutputFileNaming.Extension))
-	assert.Equal(t, "qs_", string(templates["types"].OutputFileNaming.Prefix))
-	assert.Equal(t, "types", string(templates["types"].ID))
+	assert.Equal(t, "types template\n", templates["types"].FileContent)
+	assert.Equal(t, "camel_case", templates["types"].OutputFileNaming.Style)
+	assert.Equal(t, ".any", templates["types"].OutputFileNaming.Extension)
+	assert.Equal(t, "qs_", templates["types"].OutputFileNaming.Prefix)
+	assert.Equal(t, "types", templates["types"].ID)
 	assert.Equal(t, "snake_case", manifest.Output.FileNaming.Style)
 }
 
